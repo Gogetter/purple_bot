@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'backend_mock.dart';
+import 'backend_dialogflow.dart';
 import 'chat_screen.dart';
 import 'providers.dart';
 
 void main() {
-  final manager = MockChatManager();
+  final manager = DialogFlowChatManager();
   runApp(
     ChatProvider(
       manager: manager,
@@ -18,7 +18,7 @@ void main() {
           splashColor: Colors.blueAccent.withOpacity(0.3),
           highlightColor: Colors.blueAccent.withOpacity(0.3),
         ),
-        home: ChatScreen(session: MockChatSession("Purple Bot")),
+        home: ChatScreen(session: DialogFlowChatSession("Purple Bot")),
       ),
     ),
   );
