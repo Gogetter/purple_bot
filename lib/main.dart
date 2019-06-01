@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'backend_dialogflow.dart';
-import 'backend_mock.dart';
 import 'chat_screen.dart';
 import 'providers.dart';
 
@@ -12,7 +11,7 @@ void main() {
     ChatProvider(
       manager: manager,
       child: MaterialApp(
-        title: 'Purple Bot',
+        title: 'Flutter?',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.blue,
