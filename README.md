@@ -6,3 +6,9 @@ A Flutter Chat Bot using DialogFlow API
 ## Getting Started
 
 You need to put your Google Cloud service account details in `assets/gc-service-account.json`
+
+## Contributors
+[Umair M](https://github.com/Unitarian)
+[Brais Piñeiro](https://github.com/brapifra)
+[Samuel Andreo](https://github.com/Unitarian)
+[Etimbuk U](https://github.com/Gogetter)
