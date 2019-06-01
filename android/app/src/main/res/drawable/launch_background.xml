@@ -7,6 +7,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/spalsh_image" />
+            android:src="@drawable/purple_bot" />
     </item>
 </layer-list>
