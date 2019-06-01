@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:purple_bot/utils.dart';
 
 import 'backend.dart';
+import 'constants.dart';
+import 'message-link-screen.dart';
 import 'model.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -128,12 +131,13 @@ class _ChatListState extends State<ChatList> {
   }
 
   void _onMessageInserted(int index, ChatMessage message) {
-    _listKey.currentState.insertItem(0, duration: const Duration(milliseconds: 750));
+    _listKey.currentState
+        .insertItem(0, duration: const Duration(milliseconds: 750));
   }
 
   void _onMessageRemoved(int index, ChatMessage message) {
-    _listKey.currentState
-        .removeItem(index, _buildRemoveMessageBuilder(message), duration: const Duration(milliseconds: 750));
+    _listKey.currentState.removeItem(index, _buildRemoveMessageBuilder(message),
+        duration: const Duration(milliseconds: 750));
   }
 
   @override
@@ -147,15 +151,20 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
-  Widget _buildShowMessage(BuildContext context, int index, Animation<double> animation) {
+  Widget _buildShowMessage(
+      BuildContext context, int index, Animation<double> animation) {
     final message = widget.chatSession[index];
-    final sizeAnimation = CurvedAnimation(parent: animation, curve: const ElasticOutCurve(4.0));
-    final inAnimation = CurvedAnimation(parent: animation, curve: Curves.elasticOut);
+    final sizeAnimation =
+        CurvedAnimation(parent: animation, curve: const ElasticOutCurve(4.0));
+    final inAnimation =
+        CurvedAnimation(parent: animation, curve: Curves.elasticOut);
     return SizeTransition(
       sizeFactor: sizeAnimation,
       axisAlignment: -1.0,
       child: ScaleTransition(
-        alignment: (message.from == ChatMessageFrom.Myself) ? Alignment.topRight : Alignment.topLeft,
+        alignment: (message.from == ChatMessageFrom.Myself)
+            ? Alignment.topRight
+            : Alignment.topLeft,
         scale: inAnimation,
         child: FadeTransition(
           opacity: inAnimation,
@@ -167,12 +176,15 @@ class _ChatListState extends State<ChatList> {
 
   _buildRemoveMessageBuilder(ChatMessage message) {
     return (BuildContext context, Animation<double> animation) {
-      final outAnimation = CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn);
+      final outAnimation =
+          CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn);
       return SizeTransition(
         sizeFactor: outAnimation,
         axisAlignment: 1.0,
         child: ScaleTransition(
-          alignment: (message.from == ChatMessageFrom.Myself) ? Alignment.bottomRight : Alignment.bottomLeft,
+          alignment: (message.from == ChatMessageFrom.Myself)
+              ? Alignment.bottomRight
+              : Alignment.bottomLeft,
           scale: outAnimation,
           child: FadeTransition(
             opacity: outAnimation,
@@ -190,7 +202,8 @@ class _ChatListState extends State<ChatList> {
     return Align(
       alignment: myself ? Alignment.topRight : Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0), // TODO
+        padding: const EdgeInsets.symmetric(
+            vertical: 16.0, horizontal: 24.0), // TODO
         child: Builder(
           builder: (BuildContext context) {
             if (message.from == ChatMessageFrom.AutoReply) {
@@ -200,9 +213,11 @@ class _ChatListState extends State<ChatList> {
                       (text) => Padding(
                             padding: const EdgeInsetsDirectional.only(end: 8.0),
                             child: FlatButton(
-                              onPressed: () => widget.chatSession.sendMessage(text),
+                              onPressed: () =>
+                                  widget.chatSession.sendMessage(text),
                               textColor: theme.accentColor,
-                              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 36.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0, horizontal: 36.0),
                               shape: StadiumBorder(
                                 side: BorderSide(color: Colors.blueGrey[200]),
                               ),
@@ -212,9 +227,45 @@ class _ChatListState extends State<ChatList> {
                     )
                     .toList(growable: false),
               );
+            } else if (message.link != null && message.link.isNotEmpty) {
+              return InkWell(
+                onTap: () => _openMessageLink(message, context),
+                child: Container(
+                  height: 200,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 36.0),
+                  decoration: BoxDecoration(
+                    color: myself ? Colors.blue[100] : Colors.grey[200],
+                    borderRadius: BorderRadius.only(
+                      topLeft: myself ? radius : Radius.zero,
+                      topRight: !myself ? radius : Radius.zero,
+                      bottomLeft: radius,
+                      bottomRight: radius,
+                    ),
+                  ),
+                  child: Flex(
+                    direction: Axis.vertical,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Hero(
+                          tag: messageTag,
+                          child: Image.network(
+                            extractThumbnail(message.link),
+                            height: 100,
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(message.text),
+                    ],
+                  ),
+                ),
+              );
             } else {
               return Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 36.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 12.0, horizontal: 36.0),
                 decoration: BoxDecoration(
                   color: myself ? Colors.blue[100] : Colors.grey[200],
                   borderRadius: BorderRadius.only(
@@ -231,6 +282,14 @@ class _ChatListState extends State<ChatList> {
         ),
       ),
     );
+  }
+
+  _openMessageLink(ChatMessage message, BuildContext context) {
+    setState(() => Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (context) => MessageLinkScreen(message),
+              fullscreenDialog: true),
+        ));
   }
 }
 
@@ -262,7 +321,8 @@ class _ChatEntryFieldState extends State<ChatEntryField> {
             Expanded(
               child: TextField(
                 decoration: const InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 8.0),
                   border: InputBorder.none,
                 ),
                 controller: _messageController,
@@ -282,7 +342,7 @@ class _ChatEntryFieldState extends State<ChatEntryField> {
 
   void _sendMessage() {
     final text = _messageController.value.text;
-    if(text.trim().isNotEmpty) {
+    if (text.trim().isNotEmpty) {
       _messageController.clear();
       widget.sendMessage(text);
     }
