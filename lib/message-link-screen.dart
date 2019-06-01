@@ -28,6 +28,6 @@ class _MessageLinkScreenState extends State<MessageLinkScreen> {
   Widget _buildBody(BuildContext context) {
     return Hero(
       tag: messageTag,
-      child: Container(child: Image.network(extractThumbnail(widget._message.link)),));
+      child: Container(child: Image.network(extractThumbnail(widget._message.link, widget._message.messageType)),));
   }
 }

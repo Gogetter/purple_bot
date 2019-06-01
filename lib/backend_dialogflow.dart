@@ -77,8 +77,20 @@ class DialogFlowChatSession extends ChatSession {
 
     if(response.getListMessage().length >= 2) {
       final payloadMap = response.getListMessage()[1]['payload'];
+      final messageTypeString = (payloadMap['messageType'] ?? '').toString().toLowerCase();
+      var messageType = MessageType.Text;
 
-      _insertMessage(ChatMessage.fromServer(response.getMessage(), payloadMap['link']));
+
+      switch(messageTypeString) {
+        case 'video':
+          messageType = MessageType.Video;
+          break;
+        case 'image':
+          messageType = MessageType.Image;
+          break;
+      }
+
+      _insertMessage(ChatMessage.fromServer(response.getMessage(), payloadMap['link'], messageType));
 
       final replyOptions = payloadMap['replyOptions'];
       if(replyOptions != null) {

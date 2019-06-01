@@ -251,7 +251,7 @@ class _ChatListState extends State<ChatList> {
                       Hero(
                           tag: messageTag,
                           child: Image.network(
-                            extractThumbnail(message.link),
+                            extractThumbnail(message.link, message.messageType),
                             height: 100,
                           )),
                       SizedBox(
