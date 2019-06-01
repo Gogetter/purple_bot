@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'backend.dart';
 import 'model.dart';
-import 'widgets.dart';
 
 class ChatScreen extends StatefulWidget {
   static Route<Widget> route(ChatSession session) {
