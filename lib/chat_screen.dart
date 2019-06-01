@@ -49,38 +49,37 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppToolbar(
-        title: _session.name,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-
+    ThemeData theme = Theme.of(context);
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: new Text(widget.session.name),
+          elevation: 0,
+        ),
+        body: DecoratedBox(
+          decoration: const BoxDecoration(color: Colors.white),
+          child: Stack(
+            alignment: Alignment.bottomLeft,
+            children: <Widget>[
+              DefaultTextStyle.merge(
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
+                ),
+                child: ChatList(
+                  padding: const EdgeInsets.only(bottom: 72.0),
+                  chatSession: _session,
+                ),
+              ),
+              Container(
+//              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+                child: ChatEntryField(
+                  sendMessage: _session.sendMessage,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: <Widget>[
-            DefaultTextStyle.merge(
-              style: const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-              ),
-              child: ChatList(
-                padding: const EdgeInsets.only(bottom: 72.0),
-                chatSession: _session,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-              child: ChatEntryField(
-                sendMessage: _session.sendMessage,
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -255,7 +254,7 @@ class _ChatEntryFieldState extends State<ChatEntryField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Material(
-      elevation: 6.0,
+      color: Colors.grey[200],
       child: SizedBox(
         height: 48.0,
         child: Row(
@@ -273,7 +272,7 @@ class _ChatEntryFieldState extends State<ChatEntryField> {
             ),
             IconButton(
               color: theme.accentColor,
-              icon: Icon(Icons.arrow_upward),
+              icon: Icon(Icons.arrow_forward),
               onPressed: _sendMessage,
             ),
           ],
@@ -284,7 +283,9 @@ class _ChatEntryFieldState extends State<ChatEntryField> {
 
   void _sendMessage() {
     final text = _messageController.value.text;
-    _messageController.clear();
-    widget.sendMessage(text);
+    if(text.trim().isNotEmpty) {
+      _messageController.clear();
+      widget.sendMessage(text);
+    }
   }
 }

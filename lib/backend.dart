@@ -16,8 +16,6 @@ abstract class ChatSession {
   ChatMessage operator [](int index);
   int get messageCount;
 
-  double get rating;
-
   OnChatMessageCallback onMessageInserted;
   OnChatMessageCallback onMessageRemoved;
 
