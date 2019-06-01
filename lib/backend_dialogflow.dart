@@ -78,6 +78,7 @@ class DialogFlowChatSession extends ChatSession {
     if(response.getListMessage().length >= 2) {
       final payloadMap = response.getListMessage()[1]['payload'];
       final messageTypeString = (payloadMap['messageType'] ?? '').toString().toLowerCase();
+      final images = payloadMap['images'] != null ? List<String>.from(payloadMap['images']) : null;
       var messageType = MessageType.Text;
 
 
@@ -90,7 +91,7 @@ class DialogFlowChatSession extends ChatSession {
           break;
       }
 
-      _insertMessage(ChatMessage.fromServer(response.getMessage(), payloadMap['link'], messageType));
+      _insertMessage(ChatMessage.fromServer(response.getMessage(), payloadMap['link'], messageType, images));
 
       final replyOptions = payloadMap['replyOptions'];
       if(replyOptions != null) {

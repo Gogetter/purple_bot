@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:purple_bot/utils.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 
 import 'backend.dart';
 import 'constants.dart';
@@ -261,6 +262,38 @@ class _ChatListState extends State<ChatList> {
                     ],
                   ),
                 ),
+              );
+            } else if (message.images != null) {
+              return Flex(
+                direction: Axis.vertical,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 36.0),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      color: myself ? Colors.blue[100] : Colors.grey[200],
+                      borderRadius: BorderRadius.only(
+                        topLeft: myself ? radius : Radius.zero,
+                        topRight: !myself ? radius : Radius.zero,
+                        bottomLeft: radius,
+                        bottomRight: radius,
+                      ),
+                    ),
+                    child: Text(message.text),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(left: 20),
+                      child: SizedBox(
+                          height: 250.0,
+                          width: 200.0,
+                          child: new Carousel(
+                            images: List.from((message.images
+                                .map((String img) => new NetworkImage(img)))),
+                          )))
+                ],
               );
             } else {
               return Container(
