@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:purple_bot/utils.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:purple_bot/video-player-screen.dart';
 
 import 'backend.dart';
 import 'constants.dart';
-import 'message-link-screen.dart';
+import 'webview-screen.dart';
 import 'model.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -211,7 +212,7 @@ class _ChatListState extends State<ChatList> {
               return Row(
                 children: message.replies
                     .map(
-                      (text) => Padding(
+                      (text) => Flexible(child:Padding(
                             padding: const EdgeInsetsDirectional.only(end: 8.0),
                             child: FlatButton(
                               onPressed: () =>
@@ -224,7 +225,7 @@ class _ChatListState extends State<ChatList> {
                               ),
                               child: Text(text),
                             ),
-                          ),
+                          ),)
                     )
                     .toList(growable: false),
               );
@@ -318,11 +319,27 @@ class _ChatListState extends State<ChatList> {
   }
 
   _openMessageLink(ChatMessage message, BuildContext context) {
-    setState(() => Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) => MessageLinkScreen(message),
-              fullscreenDialog: true),
-        ));
+
+    Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (context) => WebviewScreen(message),
+            fullscreenDialog: true),
+      );
+
+//    if(message.messageType == MessageType.Video) {
+//      Navigator.of(context).push(
+//        MaterialPageRoute(
+//            builder: (context) => VideoPlayerScreen(message),
+//            fullscreenDialog: true),
+//      );
+//    }
+//    else {
+//      Navigator.of(context).push(
+//        MaterialPageRoute(
+//            builder: (context) => WebviewScreen(message),
+//            fullscreenDialog: true),
+//      );
+//    }
   }
 }
 

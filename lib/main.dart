@@ -7,6 +7,7 @@ import 'providers.dart';
 
 void main() {
   final manager = DialogFlowChatManager();
+//  final manager = MockChatManager();
   runApp(
     ChatProvider(
       manager: manager,
@@ -19,6 +20,7 @@ void main() {
           splashColor: Colors.blueAccent.withOpacity(0.3),
           highlightColor: Colors.blueAccent.withOpacity(0.3),
         ),
+//        home: ChatScreen(session: MockChatSession("Purple Bot")),
         home: ChatScreen(session: DialogFlowChatSession("Purple Bot")),
       ),
     ),

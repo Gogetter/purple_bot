@@ -89,7 +89,7 @@ class MockChatSession extends ChatSession {
       }
 
 
-      _insertMessage(ChatMessage.fromServer(response, "https://www.youtube.com/watch?v=vsyjMrZa5OU"));
+      _insertMessage(ChatMessage.fromServer(response, "https://www.youtube.com/watch?v=vsyjMrZa5OU", MessageType.Video));
     }
     _fakeCount++;
     if (_fakeCount == _fakeText.length) {
