@@ -34,7 +34,7 @@ class DialogFlowChatSession extends ChatSession {
   void start() async {
     AuthGoogle authGoogle = await AuthGoogle(fileJson: "assets/gc-service-account.json").build();
     this.dialogflow = Dialogflow(authGoogle: authGoogle,language: Language.english);
-    _insertMessage(ChatMessage.fromServer('Hi! How can I help you?'));
+    _sendToServer("Hi");
   }
 
   @override
@@ -74,6 +74,18 @@ class DialogFlowChatSession extends ChatSession {
 
   void _sendToServer(String text) async {
     AIResponse response = await dialogflow.detectIntent(text);
-    _insertMessage(ChatMessage.fromServer(response.getMessage()));
+
+    if(response.getListMessage().length >= 2) {
+      final payloadMap = response.getListMessage()[1]['payload'];
+
+      _insertMessage(ChatMessage.fromServer(response.getMessage(), payloadMap['link']));
+
+      final replyOptions = payloadMap['replyOptions'];
+      if(replyOptions != null) {
+          _insertMessage(ChatMessage.forAutoReply(List<String>.from(replyOptions)));
+      }
+    } else if(response.getMessage() != null) {
+      _insertMessage(ChatMessage.fromServer(response.getMessage()));
+    }
   }
 }
