@@ -22,7 +22,7 @@ class MockChatSession extends ChatSession {
   final Random _random = Random();
 
   static const _fakeText = <String>[
-    'Hi there, what\'s your name?',
+    'Hi there, Welcome to Purple Bot',
     'Welcome, %! What\'s your email?',
     '%, got it! is it ok if we reach out.'
   ];

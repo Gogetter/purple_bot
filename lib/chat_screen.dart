@@ -5,7 +5,7 @@ import 'model.dart';
 import 'widgets.dart';
 
 class ChatScreen extends StatefulWidget {
-  static Route<dynamic> route(ChatSession session) {
+  static Route<Widget> route(ChatSession session) {
     return MaterialPageRoute(
       builder: (_) => ChatScreen(session: session),
     );
@@ -55,10 +55,7 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: RatingBar(
-              rating: _session.rating,
-              color: Colors.white,
-            ),
+
           ),
         ],
       ),
