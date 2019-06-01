@@ -1,12 +1,12 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:purple_bot/utils.dart';
-import 'package:carousel_pro/carousel_pro.dart';
-import 'package:purple_bot/video-player-screen.dart';
+import 'package:rich_link_preview/rich_link_preview.dart';
 
 import 'backend.dart';
 import 'constants.dart';
-import 'webview-screen.dart';
 import 'model.dart';
+import 'webview-screen.dart';
 
 class ChatScreen extends StatefulWidget {
   static Route<Widget> route(ChatSession session) {
@@ -142,6 +142,33 @@ class _ChatListState extends State<ChatList> {
         duration: const Duration(milliseconds: 750));
   }
 
+  Widget _messageTypeWidget(String link, MessageType messageType) {
+    switch (messageType) {
+      case MessageType.Image: {
+        return Image.network(extractThumbnail(link, messageType));
+      }
+
+      break;
+      case MessageType.Video: {
+        return RichLinkPreview(
+          link: link,
+          appendToLink: true,
+          launchFromLink: true,
+        );
+      }
+      break;
+
+      case MessageType.Text: {
+        return RichLinkPreview(
+          link: link,
+          appendToLink: true,
+          launchFromLink: true,
+        );
+      }
+      break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedList(
@@ -252,10 +279,8 @@ class _ChatListState extends State<ChatList> {
                     children: <Widget>[
                       Hero(
                           tag: messageTag,
-                          child: Image.network(
-                            extractThumbnail(message.link, message.messageType),
-                            height: 100,
-                          )),
+                          child: Material(child: _messageTypeWidget(message.link, message.messageType)),
+                          ),
                       SizedBox(
                         height: 10,
                       ),
