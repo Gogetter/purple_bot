@@ -1,11 +1,9 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:purple_bot/utils.dart';
-import 'package:rich_link_preview/rich_link_preview.dart';
 
 import 'backend.dart';
-import 'constants.dart';
 import 'model.dart';
+import 'open_graph_parser.dart';
 import 'webview-screen.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -142,31 +140,33 @@ class _ChatListState extends State<ChatList> {
         duration: const Duration(milliseconds: 750));
   }
 
-  Widget _messageTypeWidget(String link, MessageType messageType) {
-    switch (messageType) {
-      case MessageType.Image: {
-        return Image.network(extractThumbnail(link, messageType));
-      }
-
-      break;
-      case MessageType.Video: {
-        return RichLinkPreview(
-          link: link,
-          appendToLink: true,
-          launchFromLink: true,
-        );
-      }
-      break;
-
-      case MessageType.Text: {
-        return RichLinkPreview(
-          link: link,
-          appendToLink: true,
-          launchFromLink: true,
-        );
-      }
-      break;
+  Widget _messageTypeWidget(Map<String, dynamic> scrapedData, String text) {
+    if (scrapedData != null && scrapedData.isNotEmpty) {
+      return Expanded(
+        child: ListView(
+          children: <Widget>[
+            Card(
+              child: ListTile(
+                leading: Image.network(scrapedData['image'] ?? ''),
+                title: new Text(scrapedData['title'] ?? text),
+                subtitle: new Text(scrapedData['description'] ?? ''),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Text(text);
     }
+  }
+
+  Future<Map<String, dynamic>> _getLinkOgTagValues(String link) async {
+    Map<String, dynamic> scrapedData = {};
+    if(link.isNotEmpty) {
+      scrapedData = await OpenGraphParser.getOpenGraphData(link);
+    }
+
+    return scrapedData;
   }
 
   @override
@@ -226,7 +226,7 @@ class _ChatListState extends State<ChatList> {
 
   Widget _buildMessage(BuildContext context, ChatMessage message) {
     final theme = Theme.of(context);
-    final radius = Radius.circular(24.0);
+    final radius = Radius.circular(20.0);
     final myself = (message.from == ChatMessageFrom.Myself);
     return Align(
       alignment: myself ? Alignment.topRight : Alignment.topLeft,
@@ -257,37 +257,36 @@ class _ChatListState extends State<ChatList> {
                     .toList(growable: false),
               );
             } else if (message.link != null && message.link.isNotEmpty) {
-              return InkWell(
-                onTap: () => _openMessageLink(message, context),
-                child: Container(
-                  height: 200,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 36.0),
-                  decoration: BoxDecoration(
-                    color: myself ? Colors.blue[100] : Colors.grey[200],
-                    borderRadius: BorderRadius.only(
-                      topLeft: myself ? radius : Radius.zero,
-                      topRight: !myself ? radius : Radius.zero,
-                      bottomLeft: radius,
-                      bottomRight: radius,
-                    ),
-                  ),
-                  child: Flex(
-                    direction: Axis.vertical,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Hero(
-                          tag: messageTag,
-                          child: Material(child: _messageTypeWidget(message.link, message.messageType)),
-                          ),
-                      SizedBox(
-                        height: 10,
+              return FutureBuilder<Map<String, dynamic>>(
+                future: _getLinkOgTagValues(message.link),
+                builder: (context, value) {
+                  return InkWell(
+                    onTap: () => _openMessageLink(message, context),
+                    child: Container(
+                      height: 100,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 36.0),
+                      decoration: BoxDecoration(
+                        color: myself ? Colors.blue[100] : Colors.grey[200],
+                        borderRadius: BorderRadius.only(
+                          topLeft: myself ? radius : Radius.zero,
+                          topRight: !myself ? radius : Radius.zero,
+                          bottomLeft: radius,
+                          bottomRight: radius,
+                        ),
                       ),
-                      Text(message.text),
-                    ],
-                  ),
-                ),
+                      child: Flex(
+                        direction: Axis.vertical,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _messageTypeWidget(value.data, message.text)
+                        ],
+                      ),
+                    ),
+                  );
+                },
+
               );
             } else if (message.images != null) {
               return Flex(
