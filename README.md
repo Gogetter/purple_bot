@@ -9,7 +9,7 @@ Winner of the #Hack19 Flutter London day.
 You need to put your Google Cloud service account details in `assets/gc-service-account.json`
 
 ## Contributors
-[Umair M](https://github.com/Unitarian)
+[Umair M](https://github.com/umaqs)
 [Brais Piñeiro](https://github.com/brapifra)
 [Samuel Andreo](https://github.com/samuanv)
 [Etimbuk U](https://github.com/Gogetter)
